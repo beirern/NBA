@@ -1,0 +1,142 @@
+---
+title: "R Notebook"
+output: html_notebook
+---
+
+This is an [R Markdown](http://rmarkdown.rstudio.com) Notebook. When you execute code within the notebook, the results appear beneath the code. 
+
+Try executing this chunk by clicking the *Run* button within the chunk or by placing your cursor inside it and pressing *Ctrl+Shift+Enter*. 
+
+```{r}
+plot(cars)
+```
+
+Add a new chunk by clicking the *Insert Chunk* button on the toolbar or by pressing *Ctrl+Alt+I*.
+
+When you save the notebook, an HTML file containing the code and output will be saved alongside it (click the *Preview* button or press *Ctrl+Shift+K* to preview the HTML file).
+
+The preview shows you a rendered HTML copy of the contents of the editor. Consequently, unlike *Knit*, *Preview* does not run any R code chunks. Instead, the output of the chunk when it was last run in the editor is displayed.
+
+
+
+
+
+Loop through all variables and see corrolation between them and Win Shares
+
+```{r}
+for (i in 6:20) { 
+  x <- cor.test(y1980s$WS, y1980s[[i]])
+  print(paste(colnames(y1980s)[i], " est:", x$estimate, " p=value:", x$p.value))
+}
+for (i in 22:25) {
+  x <- cor.test(y1980s$WS, y1980s[[i]])
+  print(paste(colnames(y1980s)[i], " est:", x$estimate, " p=value:", x$p.value))
+}
+for (i in 27:52) {
+  x <- cor.test(y1980s$WS, y1980s[[i]])
+  print(paste(colnames(y1980s)[i], " est:", x$estimate, " p=value:", x$p.value)) 
+}
+
+
+```
+
+
+
+Loop through all variables and see corrolation between them and Win Shares, print only when corrolation > .5
+
+```{r}
+
+for (i in 6:20) { 
+  x <- cor.test(y1980s$WS, y1980s[[i]])
+  if (x$estimate >= 0.5) {
+    print(paste(colnames(y1980s)[i], " est:", x$estimate, " p=value:", x$p.value))
+  }
+}
+for (i in 22:25) {
+  x <- cor.test(y1980s$WS, y1980s[[i]])
+  if (x$estimate >= 0.5) {
+    print(paste(colnames(y1980s)[i], " est:", x$estimate, " p=value:", x$p.value))
+  }
+}
+for (i in 27:52) {
+  x <- cor.test(y1980s$WS, y1980s[[i]])
+  if (x$estimate >= 0.5) {
+    print(paste(colnames(y1980s)[i], " est:", x$estimate, " p=value:", x$p.value))
+  } 
+}
+```
+
+Do this for the other Decades
+
+```{r}
+for (i in 6:20) { 
+  x <- cor.test(y1990s$WS, y1990s[[i]])
+  if (x$estimate >= 0.5) {
+    print(paste(colnames(y1990s)[i], " est:", x$estimate, " p=value:", x$p.value))
+  }
+}
+for (i in 22:25) {
+  x <- cor.test(y1990s$WS, y1990s[[i]])
+  if (x$estimate >= 0.5) {
+    print(paste(colnames(y1990s)[i], " est:", x$estimate, " p=value:", x$p.value))
+  }
+}
+for (i in 27:52) {
+  x <- cor.test(y1990s$WS, y1990s[[i]])
+  if (x$estimate >= 0.5) {
+    print(paste(colnames(y1990s)[i], " est:", x$estimate, " p=value:", x$p.value))
+  } 
+}
+```
+
+```{r}
+for (i in 6:20) { 
+  x <- cor.test(y2000s$WS, y2000s[[i]])
+  if (x$estimate >= 0.5) {
+    print(paste(colnames(y2000s)[i], " est:", x$estimate, " p=value:", x$p.value))
+  }
+}
+for (i in 22:25) {
+  x <- cor.test(y2000s$WS, y2000s[[i]])
+  if (x$estimate >= 0.5) {
+    print(paste(colnames(y2000s)[i], " est:", x$estimate, " p=value:", x$p.value))
+  }
+}
+for (i in 27:52) {
+  x <- cor.test(y2000s$WS, y2000s[[i]])
+  if (x$estimate >= 0.5) {
+    print(paste(colnames(y2000s)[i], " est:", x$estimate, " p=value:", x$p.value))
+  } 
+}
+```
+
+```{r}
+for (i in 6:20) { 
+  x <- cor.test(y2010s$WS, y2010s[[i]])
+  if (x$estimate >= 0.5) {
+    print(paste(colnames(y2010s)[i], " est:", x$estimate, " p=value:", x$p.value))
+  }
+}
+for (i in 22:25) {
+  x <- cor.test(y2010s$WS, y2010s[[i]])
+  if (x$estimate >= 0.5) {
+    print(paste(colnames(y2010s)[i], " est:", x$estimate, " p=value:", x$p.value))
+  }
+}
+for (i in 27:52) {
+  x <- cor.test(y2010s$WS, y2010s[[i]])
+  if (x$estimate >= 0.5) {
+    print(paste(colnames(y2010s)[i], " est:", x$estimate, " p=value:", x$p.value))
+  } 
+}
+```
+
+Most of the data is rather unsurprising. Though looking at the first table surprised me as some of the stats that I thought would corrolate with Win Shares ended up showing weak corrolation. One thing to note is that all the data has been filtered, everyone has played more than 30 Games each season and around 25 minutes a game on average. This would explain why Games, Games Starting, and Minutes played have a lower corrolation that might be expected, while the data is skewed left all the data is full of players who play a good amount of games and minutes, obviously playing more games gives you a greater chance at win shares when comparing 1 game to 30, but all these guys play a good amount of games.
+
+One thing I found surprised is that 3PAr and 3P% had such a low and even a negative corrolation to Win Shares. While the data is only for the 1980s when 3 point shooting was not as popular as it is now, it is still surprising to see a negative corrolation with the most valuable shot in the game. This also shows that players can contribute to team success in more ways that just shooting, even though it seems that the best player a team can get is a "3 and D" guy. My conjecture for the weak 3 Point corrolation is that individuals do not have to shoot 3s to help their team win but a team must shoot well from 3 to be sucessful and have championship aspirations, this is just a conjecture and something to test.
+
+Another surprising thing was the low corrolation between Assists and Win Shares and additionally Rebounds and Win Shares. I have the same theory with these stats that I had with 3 Point Shooting, one individual does not need to be an amazing 3 point shooter, high assister, or a monster rebounder, but a team as a whole must do these things well. It seems like the best teams now are the best 3 point and assist teams. I'll be analyzing team statistics later and this is what I'll be looking at next. 
+
+One interesting thing is that the corrolation between MP has decreased and is below 0.5 since 2010. One NBA commentator, I believe it was Greg Anthony, said that he feels that the modern game is able to utilize more players better and get the whole bench involved. While this is anecdotal, it is interesting to note that the corrolation with MP has decreased and seems to back up that claim. Again, all data is filtered to be players aove 2025 minutes a season or 25 minutes a games so players get a good amount of minutes but it does seem to suggest that recently Win Shares can be obtained by bench players who get good minutes.
+
+Many stats tell the same story with this analysis. For example, TS%, eFG%, and 2P% showed up, from here I will only be using TS% as that has been the best shooting efficiency metric to account for 2's, 3's, and free throws, also it has the highest corrolation out of the shooting stats. VORP uses BPM in its calculation: BPM does not account for playing time while VORP does. 
