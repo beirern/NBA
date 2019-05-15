@@ -6,117 +6,82 @@ output: html_document
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Loop through all variables and see corrolation between them and Win Shares
+Data was provided via Kaggle
+https://www.kaggle.com/drgilermo/nba-players-stats
+
+The data set stores players stats from players from 1950 to 2017. I will be using stats
+for players from 1980-2017 since the 1980's are the first decade with the 3 point line.
+Here are the statistics the data set provides.
 
 ```{r}
-for (i in 6:20) { 
-  x <- cor.test(y1980s$WS, y1980s[[i]])
-  print(paste(colnames(y1980s)[i], " est:", x$estimate, " p=value:", x$p.value))
-}
-for (i in 22:25) {
-  x <- cor.test(y1980s$WS, y1980s[[i]])
-  print(paste(colnames(y1980s)[i], " est:", x$estimate, " p=value:", x$p.value))
-}
-for (i in 27:52) {
-  x <- cor.test(y1980s$WS, y1980s[[i]])
-  print(paste(colnames(y1980s)[i], " est:", x$estimate, " p=value:", x$p.value)) 
-}
+data <- read.csv('./data/Seasons_Stats.csv', stringsAsFactors = FALSE)
 
-
+y1980s <- data %>%
+            filter(Year >= 1980 & Year < 1990) %>%
+            select(-(1:6), -blanl,-blank2) %>%
+            filter(G > 25) %>%
+            filter(MP > 750)
+y1990s <- data %>%
+            filter(Year >= 1990 & Year < 2000) %>%
+            select(-(1:6), -blanl,-blank2) %>%
+            filter(G > 25) %>%
+            filter(MP > 750)
+y2000s <- data %>%
+            filter(Year >= 2000 & Year < 2010) %>%
+            select(-(1:6), -blanl,-blank2) %>%
+            filter(G > 25) %>%
+            filter(MP > 750)
+y2010s <- data %>% 
+            filter(Year >= 2010) %>%
+            select(-(1:6), -blanl,-blank2) %>%
+            filter(G > 25) %>%
+            filter(MP > 750)
+summary(y1980s)
 ```
 
+As you can see there are many stats here, from box score stats to advanced. I have filtered out 
+players who have played less than 25 games and less than 750 minutes (~30 MPG) for the season. I
+have also split the data into decades (1980s, 1990s, 2000s, 2010-2017).
 
-
-Loop through all variables and see corrolation between them and Win Shares, print only when corrolation > .5
+Now I will loop through all variables and see corrolation between them and Win Shares
 
 ```{r}
+corFunction <- function(yearData, filter) {
+  for (i in 1:length(yearData)) {
+    x <- cor.test(yearData$WS, yearData[,i])
+    if (filter & x$estimate >= 0.5) {
+      print(paste(colnames(yearData)[i], " est:", x$estimate, " p=value:", x$p.value))
+    }
+  }
+}
+```
 
-for (i in 6:20) { 
-  x <- cor.test(y1980s$WS, y1980s[[i]])
-  if (x$estimate >= 0.5) {
-    print(paste(colnames(y1980s)[i], " est:", x$estimate, " p=value:", x$p.value))
-  }
-}
-for (i in 22:25) {
-  x <- cor.test(y1980s$WS, y1980s[[i]])
-  if (x$estimate >= 0.5) {
-    print(paste(colnames(y1980s)[i], " est:", x$estimate, " p=value:", x$p.value))
-  }
-}
-for (i in 27:52) {
-  x <- cor.test(y1980s$WS, y1980s[[i]])
-  if (x$estimate >= 0.5) {
-    print(paste(colnames(y1980s)[i], " est:", x$estimate, " p=value:", x$p.value))
-  } 
-}
+```{r}
+corFunction(y1980s, FALSE)
+```
+
+Obviously there is a lot to see, we'll loop through all variables and see corrolation between them and Win Shares, print only when corrolation > .5
+
+```{r}
+corFunction(y1980s, TRUE)
 ```
 
 Do this for the other Decades
 
 ```{r}
-for (i in 6:20) { 
-  x <- cor.test(y1990s$WS, y1990s[[i]])
-  if (x$estimate >= 0.5) {
-    print(paste(colnames(y1990s)[i], " est:", x$estimate, " p=value:", x$p.value))
-  }
-}
-for (i in 22:25) {
-  x <- cor.test(y1990s$WS, y1990s[[i]])
-  if (x$estimate >= 0.5) {
-    print(paste(colnames(y1990s)[i], " est:", x$estimate, " p=value:", x$p.value))
-  }
-}
-for (i in 27:52) {
-  x <- cor.test(y1990s$WS, y1990s[[i]])
-  if (x$estimate >= 0.5) {
-    print(paste(colnames(y1990s)[i], " est:", x$estimate, " p=value:", x$p.value))
-  } 
-}
+corFunction(y1990s, TRUE)
 ```
 
 ```{r}
-for (i in 6:20) { 
-  x <- cor.test(y2000s$WS, y2000s[[i]])
-  if (x$estimate >= 0.5) {
-    print(paste(colnames(y2000s)[i], " est:", x$estimate, " p=value:", x$p.value))
-  }
-}
-for (i in 22:25) {
-  x <- cor.test(y2000s$WS, y2000s[[i]])
-  if (x$estimate >= 0.5) {
-    print(paste(colnames(y2000s)[i], " est:", x$estimate, " p=value:", x$p.value))
-  }
-}
-for (i in 27:52) {
-  x <- cor.test(y2000s$WS, y2000s[[i]])
-  if (x$estimate >= 0.5) {
-    print(paste(colnames(y2000s)[i], " est:", x$estimate, " p=value:", x$p.value))
-  } 
-}
+corFunction(y2000s, TRUE)
 ```
 
 ```{r}
-for (i in 6:20) { 
-  x <- cor.test(y2010s$WS, y2010s[[i]])
-  if (x$estimate >= 0.5) {
-    print(paste(colnames(y2010s)[i], " est:", x$estimate, " p=value:", x$p.value))
-  }
-}
-for (i in 22:25) {
-  x <- cor.test(y2010s$WS, y2010s[[i]])
-  if (x$estimate >= 0.5) {
-    print(paste(colnames(y2010s)[i], " est:", x$estimate, " p=value:", x$p.value))
-  }
-}
-for (i in 27:52) {
-  x <- cor.test(y2010s$WS, y2010s[[i]])
-  if (x$estimate >= 0.5) {
-    print(paste(colnames(y2010s)[i], " est:", x$estimate, " p=value:", x$p.value))
-  } 
-}
+corFunction(y2010s, TRUE)
 ```
 
 Most of the data is rather unsurprising. Though looking at the first table surprised me as some of the stats that I thought would corrolate with Win Shares ended up showing weak corrolation. One thing to note is that all the data has been filtered, everyone has played more than 30 Games each season and around 25 minutes a game on average. This would explain why Games, Games Starting, and Minutes played have a lower corrolation that might be expected, while the data is skewed left all the data is full of players who play a good amount of games and minutes, obviously playing more games gives you a greater chance at win shares when comparing 1 game to 30, but all these guys play a good amount of games.
