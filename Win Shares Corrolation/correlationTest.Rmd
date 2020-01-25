@@ -1,0 +1,93 @@
+---
+title: "Win Shares Correlation"
+author: "Nicola Beirer"
+date: "5/14/2019"
+output: rmarkdown::github_document
+---
+
+```{r setup, include=FALSE}
+library(dplyr)
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Data was provided via Kaggle
+https://www.kaggle.com/drgilermo/nba-players-stats
+
+The data set stores players stats from players from 1950 to 2017. I will be using stats
+for players from 1980-2017 since the 1980's are the first decade with the 3 point line.
+Here are the statistics the data set provides.
+
+```{r}
+data <- read.csv('./data/Seasons_Stats.csv', stringsAsFactors = FALSE)
+
+y1980s <- data %>%
+            filter(Year >= 1980 & Year < 1990) %>%
+            select(-(1:6), -blanl,-blank2) %>%
+            filter(G > 25) %>%
+            filter(MP > 750)
+y1990s <- data %>%
+            filter(Year >= 1990 & Year < 2000) %>%
+            select(-(1:6), -blanl,-blank2) %>%
+            filter(G > 25) %>%
+            filter(MP > 750)
+y2000s <- data %>%
+            filter(Year >= 2000 & Year < 2010) %>%
+            select(-(1:6), -blanl,-blank2) %>%
+            filter(G > 25) %>%
+            filter(MP > 750)
+y2010s <- data %>% 
+            filter(Year >= 2010) %>%
+            select(-(1:6), -blanl,-blank2) %>%
+            filter(G > 25) %>%
+            filter(MP > 750)
+summary(y1980s)
+```
+
+As you can see there are many stats here, from box score stats to advanced. I have filtered out 
+players who have played less than 25 games and less than 750 minutes (~30 MPG) for the season. I
+have also split the data into decades (1980s, 1990s, 2000s, 2010-2017).
+
+Now I will loop through all variables and see corrolation between them and Win Shares
+
+```{r}
+corFunction <- function(yearData, filter) {
+  for (i in 1:length(yearData)) {
+    x <- cor.test(yearData$WS, yearData[,i])
+    if (filter & x$estimate >= 0.5) {
+      print(paste(colnames(yearData)[i], " est:", x$estimate, " p=value:", x$p.value))
+    }
+  }
+}
+```
+
+```{r}
+corFunction(y1980s, FALSE)
+```
+
+Obviously there is a lot to see, we'll loop through all variables and see corrolation between them and Win Shares, print only when corrolation > .5
+
+```{r}
+corFunction(y1980s, TRUE)
+```
+
+Do this for the other Decades
+
+```{r}
+corFunction(y1990s, TRUE)
+```
+
+```{r}
+corFunction(y2000s, TRUE)
+```
+
+```{r}
+corFunction(y2010s, TRUE)
+```
+
+Most of the data is rather unsurprising. Though looking at the first table surprised me as some of the stats that I thought would corrolate with Win Shares ended up showing weak corrolation. One thing to note is that all the data has been filtered, everyone has played more than **25 Games** each season and around **30 minutes a game** on average. This would explain why Games, Games Starting, and Minutes played have a lower corrolation that might be expected, while the data is skewed left all the data is full of players who play a good amount of games and minutes, obviously playing more games gives you a greater chance at win shares when comparing 1 game to 30, but all these guys play a good amount of games.
+
+One thing I found surprised is that *3PAr and 3P% had such a low and even a negative corrolation to Win Shares*. While the data is only for the 1980s when 3 point shooting was not as popular as it is now, it is still surprising to see a negative corrolation with the most valuable shot in the game. This also shows that *players can contribute to team success in more ways that just shooting, even though it seems that the best player a team can get is a "3 and D" guy*. My conjecture for the weak 3 Point corrolation is that individuals do not have to shoot 3s to help their team win but a team must shoot well from 3 to be sucessful and have championship aspirations, this is just a conjecture and something to test.
+
+Another surprising thing was the low corrolation between *Assists* and Win Shares and *Rebounds* and Win Shares. I have the same theory with these stats that I had with 3 Point Shooting, **one individual** does not need to be an amazing 3 point shooter, high assister, or a monster rebounder, but a **team** as a whole must do these things well. It seems like the best teams now are the best 3 point and assist teams. I'll be analyzing team statistics later and this is what I'll be looking at next. 
+
+One interesting thing is that the corrolation between *MP has decreased and is below 0.5 since 2010*. One NBA commentator, I believe it was Greg Anthony, said that he feels that the modern game is able to utilize more players better and get the whole bench involved. While this is anecdotal, it is interesting to note that the corrolation with MP has decreased and seems to back up that claim. Again, all data is filtered to be players aove 750 minutes a season or 30 minutes a games so players get a good amount of minutes but it does seem to suggest that *Win Shares can be obtained by bench players who get good minutes*.

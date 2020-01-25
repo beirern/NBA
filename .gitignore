@@ -1,2 +1,11 @@
+<<<<<<< HEAD
 Scrap\ Lebron\ Stats/env/
 Scrap\ Lebron\ Stats/.vscode/
+=======
+*.Rproj.user
+*.Rhistory
+*.RData
+*.Ruserdata
+*.Rproj
+.Rproj.user
+>>>>>>> c38a82f44628b29b9ef9c0b84a0f13c06e9ad474
